@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const errorMiddleware = require('./middlewares/error-middleware');
+require('./middlewares/passport');
 
 const router = require('./router/index');
 
