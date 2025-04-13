@@ -18,6 +18,13 @@ app.use(cors({
     origin: [process.env.CLIENT_URL],
 }));
 
+app.get('/google', (req, res) => {
+    res.send('<a href="/api/signIn/google">Authenticate with Google</a>');
+})
+
+app.get('/google/redirect', (req, res, next) => {
+    res.send('<h1>Redirected by google</h1>');
+})
 app.use('/api', router);
 
 app.use(errorMiddleware);

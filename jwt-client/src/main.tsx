@@ -1,25 +1,16 @@
-import { createContext, StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import Store from './store/store.ts'
+import { StrictMode } from 'react';
+import ReactDOM from "react-dom/client";
+import { RouterProvider } from "react-router";
 
-interface State {
-   store: Store;
-}
+import router from './router/router';
 
-const store = new Store(); 
+import './index.css';
 
-export const Context = createContext<State>({
-  store,
-})
+const root: HTMLElement = document.getElementById('root') as HTMLElement;
 
-createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(root).render(
   <StrictMode>
-    <Context.Provider value={{
-      store
-    }}>
-      <App />
-    </Context.Provider>
-  </StrictMode>,
-)
+    <RouterProvider router={router} />
+  </StrictMode>
+);
+

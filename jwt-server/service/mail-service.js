@@ -2,7 +2,6 @@ const nodemailer = require('nodemailer');
 
 class MailService {
     constructor () {
-        console.log(process.env.SMTP_PASSWORD)
         this.transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
             port: process.env.SMTP_PORT,

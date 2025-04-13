@@ -11,6 +11,7 @@ router.post('/signUp',
     userController.signUp
 );
 router.post('/signIn', userController.signIn);
+router.get('/signIn/google', userController.signInWithGoogle);
 router.post('/signOut', userController.signOut);
 router.get('/activate/:link', userController.activate);
 router.get('/refresh', userController.refresh);

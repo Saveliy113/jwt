@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const passport = require('passport');
 
 const userService = require('../service/user-service');
 const ApiError = require('../exceptions/api-error');
@@ -40,6 +41,14 @@ class UserController {
             return res.status(200).json(userData);
         } catch (error) {
             next(error); 
+        }
+    }
+
+    async signInWithGoogle (req, res, next) {
+        try {
+            passport.authenticate('google', { scope: ['email', 'profile'] })(req, res, next);
+        } catch (error) {
+            next(error);
         }
     }
 
