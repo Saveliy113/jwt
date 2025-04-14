@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
 import React from "react";
+
+import LoginForm from "@/components/loginForm/LoginForm";
 
 const AuthPage: React.FC = () => {
     return (
-        <>
-            <h1>Auth Page</h1>
-            <Button>Click me</Button>
-        </>
+        <div>
+            <LoginForm />
+        </div>
     )
 }
 
