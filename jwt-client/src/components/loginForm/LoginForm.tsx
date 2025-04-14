@@ -1,14 +1,41 @@
-import { FC } from 'react';
+import { FC } from 'react'
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import FormSchema from './dto/formSchema'
+import { z } from "zod"
 
-import { Button } from '../ui/button';
+import { Button } from '../ui/button'
+import { Checkbox } from "@/components/ui/checkbox"
+import { toast } from "sonner"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form"
 
-import logo from '../../assets/logo.png';
-import googleIcon from '../../assets/icons/google_icon.svg';
+import logo from '../../assets/logo.png'
+import googleIcon from '../../assets/icons/google_icon.svg'
+import { Input } from '../ui/input'
 
 const LoginForm: FC = () => {
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+          username: '',
+            email: '',
+            password: '',
+        },
+    });
+
+    function onSubmit(data: z.infer<typeof FormSchema>) {
+        toast.success('Submited');
+    }
+
     return (
-        <div className="login-form mt-10 ml-10 border border-gray-500 w-[500px]">
+        <div className="login-form mt-10 ml-10 border border-gray-500 w-[450px]">
             <div className='login-form__header'>
                 <div className="header__title flex flex-col items-center w-full">
                     <img className='w-60' src={logo} alt='Logo' />
@@ -37,7 +64,70 @@ const LoginForm: FC = () => {
                 </div>
 
                 <div className="controls__sign-in">
-                    
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="username"
+                                render={({ field }) => (
+                                  <FormItem className='w-full'>
+                                    <FormLabel className='text-xs font-light'>Username</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className='text-xs font-light'>Email</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className='text-xs font-light'>Password</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        type='password'
+                                        className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
+                                        {...field} 
+                                       />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                            />
+
+                            <div className="flex items-center space-x-2">
+                                <Checkbox id="remember" className='cursor-pointer' />
+                                <label
+                                  htmlFor="remember"
+                                  className="cursor-pointer text-xs font-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                  Remember me
+                                </label>
+                            </div>
+                            <Button className='w-full mt-5 cursor-pointer flex-1 py-6' variant="default" type="submit">Let's Start</Button>
+                        </form>
+                    </Form>
                 </div>
             </div>
         </div>
