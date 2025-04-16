@@ -1,7 +1,7 @@
-import { FC } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import FormSchema from './dto/formSchema'
+import { SignInSchema, SignUpSchema } from './dto/formSchema'
 import { z } from "zod"
 
 import { Button } from '../ui/button'
@@ -19,10 +19,17 @@ import {
 import logo from '../../assets/logo.png'
 import googleIcon from '../../assets/icons/google_icon.svg'
 import { Input } from '../ui/input'
+import { LoginFormActionType } from './model/loginForm.model'
 
 const LoginForm: FC = () => {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+  const [actionType, setActionType] = useState<LoginFormActionType>('signUp');
+
+  const schema = useMemo(() => (
+    actionType === 'signIn' ? SignInSchema : SignUpSchema
+  ), [actionType])
+
+    const form = useForm<z.infer<typeof schema>>({
+        resolver: zodResolver(schema),
         defaultValues: {
           username: '',
             email: '',
@@ -30,7 +37,16 @@ const LoginForm: FC = () => {
         },
     });
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
+    // Reset form when actionType changes
+    useEffect(() => {
+      form.reset({
+        username: '',
+        email: '',
+        password: '',
+      })
+    }, [actionType])
+
+    function onSubmit(data: z.infer<typeof schema>) {
         toast.success('Submited');
     }
 
@@ -43,8 +59,20 @@ const LoginForm: FC = () => {
                 </div>
 
                 <div className="header__actions w-full flex items-center gap-2 mt-5">
-                    <Button className='cursor-pointer flex-1 py-6' variant="default">Sign Up</Button>
-                    <Button className='cursor-pointer flex-1 py-6' variant="outline">Log in</Button>
+                    <Button
+                      className='cursor-pointer flex-1 py-6 h-[50px]'
+                      variant={actionType === 'signUp' ? 'default' : 'outline'}
+                      onClick={() => setActionType('signUp')}
+                      >
+                      Sign Up
+                    </Button>
+                    <Button
+                      className='cursor-pointer flex-1 py-6 h-[50px]'
+                      variant={actionType === 'signIn' ? 'default' : 'outline'}
+                      onClick={() => setActionType('signIn')}
+                    >
+                      Sign in
+                    </Button>
                 </div>
             </div>
 
@@ -64,8 +92,9 @@ const LoginForm: FC = () => {
                 </div>
 
                 <div className="controls__sign-in">
-                    <Form {...form}>
+                    <Form {...form} key={actionType}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+                          {actionType === 'signIn' && (
                             <FormField
                                 control={form.control}
                                 name="username"
@@ -82,6 +111,7 @@ const LoginForm: FC = () => {
                                   </FormItem>
                                 )}
                             />
+                          )}
                             <FormField
                                 control={form.control}
                                 name="email"
@@ -116,6 +146,7 @@ const LoginForm: FC = () => {
                                 )}
                             />
 
+                            {actionType === 'signIn' && (
                             <div className="flex items-center space-x-2">
                                 <Checkbox id="remember" className='cursor-pointer' />
                                 <label
@@ -125,6 +156,7 @@ const LoginForm: FC = () => {
                                   Remember me
                                 </label>
                             </div>
+                            )}
                             <Button className='w-full mt-5 cursor-pointer flex-1 py-6' variant="default" type="submit">Let's Start</Button>
                         </form>
                     </Form>
