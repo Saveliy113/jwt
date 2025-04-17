@@ -11,8 +11,8 @@ export default class AuthService {
         return $api.post('/signOut');
     }
 
-    static async signUp(email: string, password: string): Promise<AuthResponse> {
-        const res = await $api.post<AuthResponse>('/signUp', { email, password});
+    static async signUp(email: string, username: string, password: string): Promise<AuthResponse> {
+        const res = await $api.post<AuthResponse>('/signUp', { email, username, password});
         return res.data;
     }
 
