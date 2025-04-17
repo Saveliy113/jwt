@@ -7,6 +7,7 @@ const router = new Router();
 
 router.post('/signUp',
     body('email').isEmail(),
+    body('username').isLength({ min: 3, max: 32 }),
     body('password').isLength({ min: 3, max: 32 }),
     userController.signUp
 );

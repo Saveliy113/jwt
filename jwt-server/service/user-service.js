@@ -9,7 +9,7 @@ const UserDto = require('../dtos/user-dto');
 const ApiError = require('../exceptions/api-error');
 
 class UserService {
-    async signUp(email, password) {
+    async signUp(email, username, password) {
         const candidate = await User.findOne({ email });
 
         if (candidate) {
@@ -18,7 +18,7 @@ class UserService {
 
         const hashedPassword = await bcrypt.hash(password, 3);
         const activationLink = uuid.v4();
-        const user = await User.create({ email, password: hashedPassword, activationLink });
+        const user = await User.create({ email, username, password: hashedPassword, activationLink });
 
         await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
 
