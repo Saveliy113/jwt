@@ -1,4 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router'
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SignInSchema, SignUpSchema } from './dto/formSchema'
@@ -24,7 +25,10 @@ import { LoginFormActionType } from './model/loginForm.model'
 import { useSignUp } from '@/hooks/useAuth'
 
 const LoginForm: FC = () => {
-  const [actionType, setActionType] = useState<LoginFormActionType>('signUp');
+  const location = useLocation();
+  const routePath: LoginFormActionType = location.pathname.replace('/', '') as LoginFormActionType;
+
+  const [actionType, setActionType] = useState<LoginFormActionType>(routePath);
 
   const schema = useMemo(() => (
     actionType === 'signIn' ? SignInSchema : SignUpSchema
@@ -34,8 +38,8 @@ const LoginForm: FC = () => {
         resolver: zodResolver(schema),
         defaultValues: {
           username: '',
-            email: '',
-            password: '',
+          email: '',
+          password: '',
         },
     });
 
@@ -133,22 +137,24 @@ const LoginForm: FC = () => {
                                 </FormItem>
                               )}
                           />
-                          <FormField
-                              control={form.control}
-                              name="email"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className='text-xs font-light'>Email</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                          />
+                          { actionType === 'signUp' && (
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className='text-xs font-light'>Email</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                            />
+                          )}
                           <FormField
                               control={form.control}
                               name="password"
@@ -182,6 +188,7 @@ const LoginForm: FC = () => {
                               className='w-full mt-5 cursor-pointer flex-1 py-6'
                               variant="default"
                               type="submit"
+                              disabled={isPending}
                             >
                              {isPending ? <Loader2 className='animate-spin w-5 h-5' /> : 'Let\'s Start'}
                             </Button>

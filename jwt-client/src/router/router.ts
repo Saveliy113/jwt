@@ -19,7 +19,7 @@ const routes: RouteObject[] = [
             Component: AuthPage,
         },
         {
-            path: "activate/:id",
+            path: "activate",
             Component: ActivationPage,
         }
     ]
