@@ -15,11 +15,13 @@ import {
     FormLabel,
     FormMessage,
   } from "@/components/ui/form"
+import { Loader2 } from 'lucide-react'
 
 import logo from '../../assets/logo.png'
 import googleIcon from '../../assets/icons/google_icon.svg'
 import { Input } from '../ui/input'
 import { LoginFormActionType } from './model/loginForm.model'
+import { useSignUp } from '@/hooks/useAuth'
 
 const LoginForm: FC = () => {
   const [actionType, setActionType] = useState<LoginFormActionType>('signUp');
@@ -46,8 +48,21 @@ const LoginForm: FC = () => {
       })
     }, [actionType])
 
-    function onSubmit(data: z.infer<typeof schema>) {
-        toast.success('Submited');
+    const { mutate: signUp, isPending, isSuccess, isError} = useSignUp({
+      onSuccess: () => {
+        toast.success('Successfully authenticated')
+      }
+    });
+
+    async function onSubmitSignUp(data: z.infer<typeof schema>) {
+      console.log('Sign Up', data)
+      await signUp(data);
+      toast.success('Submited Sign Up');
+    }
+
+    function onSubmitSignIn(data: z.infer<typeof schema>) {
+        console.log('Sign In')
+        toast.success('Submited Sign In');
     }
 
     return (
@@ -93,57 +108,63 @@ const LoginForm: FC = () => {
 
                 <div className="controls__sign-in">
                     <Form {...form} key={actionType}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
-                          {actionType === 'signIn' && (
-                            <FormField
-                                control={form.control}
-                                name="username"
-                                render={({ field }) => (
-                                  <FormItem className='w-full'>
-                                    <FormLabel className='text-xs font-light'>Username</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                            />
-                          )}
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className='text-xs font-light'>Email</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className='text-xs font-light'>Password</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        type='password'
-                                        className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
-                                        {...field} 
-                                       />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
+                        <form 
+                          onSubmit={
+                            form.handleSubmit(
+                              actionType === 'signUp'
+                                ? onSubmitSignUp
+                                : onSubmitSignIn
+                            )}
+                          className="w-full space-y-4"
+                        >
+                          <FormField
+                              control={form.control}
+                              name="username"
+                              render={({ field }) => (
+                                <FormItem className='w-full'>
+                                  <FormLabel className='text-xs font-light'>Username</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                          />
+                          <FormField
+                              control={form.control}
+                              name="email"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className='text-xs font-light'>Email</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                          />
+                          <FormField
+                              control={form.control}
+                              name="password"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className='text-xs font-light'>Password</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type='password'
+                                      className='w-full !border-cyan-300 py-7 px-5 !ring-cyan-100'
+                                      {...field} 
+                                     />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
                             />
 
                             {actionType === 'signIn' && (
@@ -157,7 +178,13 @@ const LoginForm: FC = () => {
                                 </label>
                             </div>
                             )}
-                            <Button className='w-full mt-5 cursor-pointer flex-1 py-6' variant="default" type="submit">Let's Start</Button>
+                            <Button
+                              className='w-full mt-5 cursor-pointer flex-1 py-6'
+                              variant="default"
+                              type="submit"
+                            >
+                             {isPending ? <Loader2 className='animate-spin w-5 h-5' /> : 'Let\'s Start'}
+                            </Button>
                         </form>
                     </Form>
                 </div>
