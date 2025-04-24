@@ -7,7 +7,7 @@ const ActivationPage: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container h-full flex justify-center items-center text-center border border-red-500">
+        <div className="container h-full flex justify-center items-center text-center">
             <div>
                 <h1 className="text-5xl font-medium">Your account has been successfully activated</h1>
                 <span className="block text-9xl mt-10 mb-10">😎</span>
