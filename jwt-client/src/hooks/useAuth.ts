@@ -5,6 +5,14 @@ import AuthService from '@/services/AuthService';
 
 import { AuthResponse } from '@/models/response/AuthResponse';
 
+export const useSignIn = (options?: UseMutationOptions<AuthResponse, AxiosError, { email: string; password: string }>) => {
+    return useMutation<AuthResponse, AxiosError, { email: string; password: string }>({
+        mutationFn: ({ email, password}) => AuthService.signIn(email, password),
+        ...options,
+    }
+    )
+}
+
 export const useSignUp = (options?: UseMutationOptions<AuthResponse, AxiosError, { email: string; username: string; password: string }>) => {
     return useMutation<AuthResponse, AxiosError, { email: string; username: string; password: string }>({
         mutationFn: ({ email, username, password}) => AuthService.signUp(email, username, password),

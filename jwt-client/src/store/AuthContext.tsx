@@ -31,10 +31,16 @@ export const AuthProvider = ({ children }: { children: ReactNode })=> {
             navigate("/signIn", { replace: true });
         }
     })
-
-
+    
+    
     useEffect(() => {
-        checkAuth();
+        if (localStorage.getItem('token')) {
+            checkAuth();
+        } else {
+            if (!isAuthenticated) {
+                navigate("/signIn", { replace: true });
+            }
+        }
     }, [])
 
     if (isPending) {
