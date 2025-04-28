@@ -1,5 +1,6 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useForm } from "react-hook-form"
+import { useNavigate } from 'react-router'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SignInSchema } from './dto/formSchema'
 import { z } from "zod"
@@ -20,8 +21,14 @@ import {
 import { Loader2 } from 'lucide-react'
 
 import { Input } from '../ui/input'
+import { useAuthContext } from '@/store/AuthContext'
 
 const SignInForm: FC = () => {
+    const navigate = useNavigate();
+    const { setUser, setIsAuthenticated } = useAuthContext();
+
+    const [isRemember, setIsRemember] = useState<boolean>(false);
+
     const form = useForm<z.infer<typeof SignInSchema>>({
         resolver: zodResolver(SignInSchema),
         defaultValues: {
@@ -37,15 +44,26 @@ const SignInForm: FC = () => {
       })
     }, [])
 
-    const { mutate: signIn, isPending, isSuccess, isError} = useSignIn({
-      onSuccess: () => {
+    const { mutate: signIn, isPending } = useSignIn({
+      onSuccess: (data) => {
+        switch (isRemember) {
+          case true:
+            localStorage.setItem('token', data.accessToken);
+            break;
+          case false:
+            sessionStorage.setItem('token', data.accessToken);
+            break;
+        }
         toast.success('Successfully authenticated')
+        setIsAuthenticated(true);
+        setUser(data.user);
+        navigate('/');
       }
     });
 
 
     function onSubmitSignIn(data: z.infer<typeof SignInSchema>) {
-        console.log('Sign In', data);
+        signIn(data);
     }
 
     return (
@@ -90,7 +108,13 @@ const SignInForm: FC = () => {
                     />
 
                     <div className="flex items-center space-x-2">
-                        <Checkbox id="remember" className='cursor-pointer' />
+                        <Checkbox
+                          id="remember"
+                          className='cursor-pointer'
+                          checked={isRemember}
+                          onCheckedChange={(checked: boolean) => setIsRemember(checked)}
+
+                        />
                         <label
                           htmlFor="remember"
                           className="cursor-pointer text-xs font-light leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
