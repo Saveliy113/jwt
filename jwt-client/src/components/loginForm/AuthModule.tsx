@@ -45,7 +45,11 @@ const LoginForm: FC = () => {
                 <div className='controls__sign-up text-left'>
                     <h2 className='text-4xl'>Begin Your Adventure</h2>
                     <p className='text-xs font-light mt-3 mb-2'>Sign Up with Open account</p>
-                    <Button className='border-cyan-300 mt-1 px-10 py-5 w-full cursor-pointer' variant="outline">
+                    <Button
+                        className='border-cyan-300 mt-1 px-10 py-5 w-full cursor-pointer'
+                        variant="outline"
+                        onClick={() => window.location.href = 'http://localhost:5010/api/signIn/google'}
+                    >
                         <img src={googleIcon} alt="Google Icon" />
                     </Button>
                 </div>
