@@ -55,6 +55,22 @@ class UserService {
         }
     }
 
+    async signInWithGoogle(email, username) {
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = await User.create({ email, username, isActivated: true });
+        }
+
+        const userDto = new UserDto(user);
+
+        const tokens = await tokenService.generateTokens({ ...userDto });
+
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+        return tokens;
+    }
+
     async signOut(refreshToken) {
         const token = await tokenService.removeToken(refreshToken);
 

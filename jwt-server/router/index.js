@@ -1,6 +1,8 @@
 const Router = require('express').Router;
-const userController = require('../controllers/user-controller');
 const { body } = require('express-validator');
+const passport = require('passport');
+
+const userController = require('../controllers/user-controller');
 const authMiddleware = require('../middlewares/auth-middleware');
 
 const router = new Router();
@@ -12,7 +14,13 @@ router.post('/signUp',
     userController.signUp
 );
 router.post('/signIn', userController.signIn);
-router.get('/signIn/google', userController.signInWithGoogle);
+router.get('/signIn/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+router.get('/signIn/google/callback', passport.authenticate('google', {
+    failureRedirect: `${process.env.CLIENT_URL}/signIn`,
+    session: false
+  }),
+  userController.googleCallback
+)
 router.post('/signOut', userController.signOut);
 router.get('/activate/:link', userController.activate);
 router.get('/refresh', userController.refresh);
