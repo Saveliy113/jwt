@@ -9,14 +9,16 @@ import { LoginFormActionType } from './model/loginForm.model'
 import SignUpForm from './SignUpForm'
 import SignInForm from './SignInForm'
 
-const LoginForm: FC = () => {
+type LoginFormProps = React.HTMLAttributes<HTMLDivElement>;
+
+const LoginForm: FC<LoginFormProps> = ({ className, ...rest }) => {
   const location = useLocation();
   const routePath: LoginFormActionType = location.pathname.replace('/', '') as LoginFormActionType;
 
   const [actionType, setActionType] = useState<LoginFormActionType>(routePath);
 
   return (
-        <div className="login-form mt-10 ml-10 border border-gray-500 w-[450px]">
+        <div className={`login-form mt-10 ml-10 w-[450px] ${className ?? ''}`} { ...rest }>
             <div className='login-form__header'>
                 <div className="header__title flex flex-col items-center w-full">
                     <img className='w-60' src={logo} alt='Logo' />
