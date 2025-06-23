@@ -40,14 +40,12 @@ const SignUpForm: FC = () => {
 
     const { mutate: signUp, isPending, isSuccess, isError} = useSignUp({
       onSuccess: () => {
-        toast.success('Successfully authenticated')
+        toast.success('Account created')
       }
     });
 
     async function onSubmitSignUp(data: z.infer<typeof SignUpSchema>) {
-      console.log('Sign Up', data)
-      // await signUp(data);
-      toast.success('Submited Sign Up');
+      await signUp(data);
     }
 
     return (
